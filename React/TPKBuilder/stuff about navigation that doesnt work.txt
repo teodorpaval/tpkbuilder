@@ -1,0 +1,48 @@
+/*
+class HomeScreen extends React.Component {
+	static navigationOptions = {
+		title: 'Welcome'
+	};
+	render(){
+		return (
+			<View>
+				<Text>Hello, Navigation!</Text>
+				<Button
+					onPress={() => navigate('Other')}
+					title="NAVIGATE!"
+				/>
+			</View>
+		);
+	}
+}
+
+class OtherScreen extends React.Component {
+	static navigationOptions = {
+		title: 'Other Screen',
+	};
+	render() {
+		return (
+			<View>
+				<Text>This is the other screen</Text>
+			</View>
+		);
+	}
+}
+
+export const SimpleApp = StackNavigator({
+	Home: { screen: HomeScreen },
+	Other: { screen: OtherScreen },
+});
+
+export default class App extends React.Component {
+  render() {
+  	return (
+  		<View>
+  			<Text>WAT</Text>
+  			<Text>DE CE NU MERGE</Text>
+  			<SimpleApp/>
+  		</View>
+  		);
+  }
+}
+*/
