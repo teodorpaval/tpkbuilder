@@ -3,31 +3,46 @@ package com.example.teo.tpkbuilder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 public class EditActivity extends AppCompatActivity {
-    public static MonsterController monsterController = ListActivity.monsterController;
+    //public static MonsterController monsterController = ListActivity.monsterController;
+    //public MonsterDatabase monsterDatabase = MonsterDatabase.getDatabase(getApplicationContext());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         //String nameString = getIntent().getStringExtra("name");
+        Log.v("EditActivity", "start");
         final int index = getIntent().getIntExtra("index", -1);
         final EditText name = (EditText) findViewById(R.id.fldName);
-
-        name.setText(monsterController.getMonsterArrayList().get(index).getName());
+        final MonsterDatabase monsterDatabase = MonsterDatabase.getDatabase(getApplicationContext());
+        final Monster currentMonster = monsterDatabase.monsterDao().getEntries().get(index);
+        //final Monster currentMonster = new Monster();
+        name.setText(currentMonster.getName());
 
         Button saveButton = (Button) findViewById(R.id.buttonSave);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                monsterController.updateMonster(index, name.getText().toString());
+                currentMonster.setName(name.getText().toString());
+                monsterDatabase.monsterDao().update(currentMonster);
+                finish();
+            }
+        });
 
+        Button deleteButton = (Button) findViewById(R.id.buttonDelete);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                monsterDatabase.monsterDao().remove(currentMonster);
+                finish();
             }
         });
 
