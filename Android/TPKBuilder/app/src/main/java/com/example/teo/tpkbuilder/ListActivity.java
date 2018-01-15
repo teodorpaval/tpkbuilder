@@ -1,6 +1,9 @@
 package com.example.teo.tpkbuilder;
 
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,27 +12,44 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.List;
+import org.json.JSONArray;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 
 public class ListActivity extends AppCompatActivity {
     public static MonsterController monsterController = new MonsterController();
-    ArrayAdapter<Monster> listAdapter;
+    ArrayList<String> monsterDataJson;
+    ArrayAdapter<Monster> monsterArrayAdapter;
+    ArrayAdapter<String> stringArrayAdapter;
     MonsterDatabase monsterDatabase;
+    static String monsterUrl = "http://10.0.2.2:3000/monsters";
     Monster monster;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+
+
+        //-------------------DATABASE STUFF-------------------
+
         monsterDatabase = MonsterDatabase.getDatabase(getApplicationContext());
-
-        ListView monsterView = (ListView) findViewById(R.id.listView);
-
-        listAdapter = new ArrayAdapter<Monster>(
+        monsterArrayAdapter = new ArrayAdapter<Monster>(
                 this,
                 android.R.layout.simple_list_item_1,
                 monsterDatabase.monsterDao().getEntries());
 
-        monsterView.setAdapter(listAdapter);
+        stringArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, monsterDataJson);
+
+        ListView monsterView = (ListView) findViewById(R.id.listView);
+
+
+
+        monsterView.setAdapter(monsterArrayAdapter);
         Log.v("ListActivity", "aaaaaaaaaaaaaaaaa");
         final Intent editIntent = new Intent(this, EditActivity.class);
 
@@ -38,7 +58,7 @@ public class ListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 editIntent.putExtra("index", i);
                 startActivity(editIntent);
-                //listAdapter.notifyDataSetChanged();
+                //monsterArrayAdapter.notifyDataSetChanged();
             }
         });
 
@@ -51,10 +71,10 @@ public class ListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        listAdapter.clear();
-        listAdapter.addAll(MonsterDatabase.getDatabase(getApplicationContext())
+        monsterArrayAdapter.clear();
+        monsterArrayAdapter.addAll(MonsterDatabase.getDatabase(getApplicationContext())
                 .monsterDao().getEntries());
-        listAdapter.notifyDataSetChanged();
+        monsterArrayAdapter.notifyDataSetChanged();
         
         Log.d("ListActivity", "resumed");
     }
